@@ -4,66 +4,30 @@ using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.ARFoundation;
 
-
 public class TrackImage : MonoBehaviour
 {
     private float time_limit = 1f;
-
     private AudioSource audiosource;
-
     public ARTrackedImageManager manager;
-    public List<GameObject> objList = new List<GameObject>();
-    
+    public List<GameObject> objList = new List<GameObject>();  
     private GameObject obj_current_view;
-    private ARTrackedImage img_current;
-        
+    private ARTrackedImage img_current;        
     Dictionary<string, GameObject> prefDic = new Dictionary<string, GameObject>();
     public List<AudioClip> list_music = new List<AudioClip>();
-
     private List<ARTrackedImage> list_trackedImg = new List<ARTrackedImage>();
     private List<float> list_timer = new List<float>();
-
 
     private void Awake()
     {
         audiosource = GetComponent<AudioSource>();
-
         foreach (GameObject obj in objList)
         {
             string name = obj.name;
             Debug.Log(name);
             prefDic.Add(name, obj);
         }
-
     }
-
-    /*
-    private void Update()
-    {
-        if (list_trackedImg.Count > 0)
-        {
-            for (int i = 0; i < list_trackedImg.Count; i++)
-            {
-                if (list_trackedImg[i].trackingState == UnityEngine.XR.ARSubsystems.TrackingState.Limited)
-                {
-                    if(list_timer[i] > time_limit)
-                    {
-                        string name = list_trackedImg[i].referenceImage.name;
-                        prefDic[name].SetActive(false);
-                    }
-                    else
-                    {
-                        list_timer[i] += Time.deltaTime;
-                    }
-
-                }
-
-            }
-        }
-    }
-    */
-
-
+    
     private void OnEnable()
     {
         manager.trackedImagesChanged += ImageChanged;
@@ -74,7 +38,6 @@ public class TrackImage : MonoBehaviour
         manager.trackedImagesChanged -= ImageChanged;
     }
 
-
     private void Update()
     {
         if (obj_current_view != null)
@@ -83,7 +46,6 @@ public class TrackImage : MonoBehaviour
             
         }
     }
-
 
     private void ImageChanged(ARTrackedImagesChangedEventArgs args)
     {
@@ -97,27 +59,7 @@ public class TrackImage : MonoBehaviour
             UpdateImage(img);
 
         }
-
-
-        foreach (ARTrackedImage img in args.updated)
-        {  
-
-            /*
-            if (!list_trackedImg.Contains(img))
-            {
-                list_trackedImg.Add(img);
-                list_timer.Add(0);
-            }
-            else
-            {
-                int num = list_trackedImg.IndexOf(img);
-                list_timer[num] = 0;
-                UpdateImage(img);
-            } 
-            */
-        }
     }
-
 
     private void ClearImage()
     {
@@ -132,19 +74,13 @@ public class TrackImage : MonoBehaviour
     {
         img_current = img;
         string name = img.referenceImage.name;
-        obj_current_view = prefDic[name];
-
-        //obj_current_view.transform.position = camera.transform.position + new Vector3(0f, 0f, 0.05f);
-        //obj_current_view.transform.position = img.transform.position + new Vector3(0f,0f, 0.005f);
-        //obj_current_view.transform.position += new Vector3(img.transform.position.x, img.transform.position.y, img.transform.position.z+0.005f);
-        obj_current_view.transform.position = img.transform.position + new Vector3(0f, 0f, 0.05f);
-        
+        obj_current_view = prefDic[name];    
+        obj_current_view.transform.position = img.transform.position + new Vector3(0f, 0f, 0.05f);        
 
         for (int i = 0;i<objList.Count;i++)
         {
             objList[i].SetActive(false);
         }
-
 
         if (audiosource.isPlaying) audiosource.Stop();
 
@@ -157,8 +93,6 @@ public class TrackImage : MonoBehaviour
                 break;
             }
         }
-
-
         obj_current_view.SetActive(true);
     }
 
